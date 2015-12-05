@@ -7,16 +7,25 @@ exports = module.exports = function(io) {
     io.on('connection', function(socket) {
         console.log("++++++++socket connect+++++++++++")
 
-
         var jwt = require('jsonwebtoken');
-        var token = jwt.sign({
-            foo: 'bar'
+        var token1 = jwt.sign({
+            user: 'user1',
+            room: "test"
         }, 'test');
-        l(token)
+        l(token1)
 
+        var token2 = jwt.sign({
+            user: 'user2',
+            room: "test"
+        }, 'test');
+        l(token2)
 
+        var token3 = jwt.sign({
+            user: 'user3',
+            room: "test"
+        }, 'test');
+        l(token3)
 
-        //temp delete socket from namespace connected map
 
         delete io.sockets.connected[socket.id];
 
@@ -43,10 +52,13 @@ exports = module.exports = function(io) {
                 if (!err && decoded) {
                     //restore temporarily disabled connection
                     io.sockets.connected[socket.id] = socket;
+                    //console.log(io.sockets.connected[socket.id])
+                    console.log(socket.id)
                     console.log("auth ok ")
+                    console.log(decoded)
                     socket.decoded_token = decoded;
                     socket.connectedAt = new Date();
-
+                    socket.join(decoded.room)
                     // Disconnect listener
                     socket.on('disconnect', function() {
                         console.info('SOCKET [%s] DISCONNECTED', socket.id);
@@ -86,24 +98,34 @@ exports = module.exports = function(io) {
                         socket.broadcast.emit('new channel', channel)
                     });
 
+
+                    socket.on('room', function(msg) {
+                        console.log('on room')
+                        console.log(msg)
+                        socket.to('test').emit('room_msg', msg);
+                        console.log(socket.id)
+                    });
+
+                    socket.on('broad', function(channel) {
+                        console.log(channel)
+                        socket.broadcast.emit('new channel', channel)
+                    });
+
+
                     socket.on('test', function(channel) {
                         console.log("on test ok")
                     });
 
-                    socket.on('typing', function() {
-                        console.log("typing")
-                        socket.broadcast.emit('typing bc', socket.username);
-                    });
-                    socket.on('stop typing', function() {
-                        socket.broadcast.emit('stop typing bc', socket.username);
-                    });
 
                     socket.on('id msg', function(msg) {
                         console.log(socket.id)
                         console.log("on:id msg")
-                        console.log(msg[0].id)
+                        console.log("on:id msg")
+                        console.log(msg)
+                        console.log(msg[1].id)
+                        console.log(msg.id)
                             // socket.to('room2').emit('gg',{test: "msg1 ok"})
-                        socket.to(msg[0].id).emit('gg', {
+                        socket.to(msg[1].id).emit('gg', {
                             test: "msg2 ok"
                         })
                     });
