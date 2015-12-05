@@ -2,6 +2,7 @@ var count = 0
 var l = console.log
 
 var jwt = require('jsonwebtoken');
+var User = require('./models/User');
 
 exports = module.exports = function(io) {
     io.on('connection', function(socket) {
@@ -31,7 +32,8 @@ exports = module.exports = function(io) {
 
         var options = {
             secret: "test",
-            timeout: 5000 // 5 seconds to send the authentication message
+            timeout: 5000, // 5 seconds to send the authentication message
+            algorithm: 'HS256'
         }
 
         var auth_timeout = setTimeout(function() {
@@ -44,7 +46,7 @@ exports = module.exports = function(io) {
 
         var authenticate = function(data) {
             clearTimeout(auth_timeout);
-            jwt.verify(data.token, options.secret, options, function(err, decoded) {
+            jwt.verify(data.token, options.secret, options, function(err, decoded,decode2) {
                 if (err) {
                     socket.disconnect('unauthorized');
                     console.log("unauthorized")
@@ -56,6 +58,7 @@ exports = module.exports = function(io) {
                     console.log(socket.id)
                     console.log("auth ok ")
                     console.log(decoded)
+                    console.log(decode2)
                     socket.decoded_token = decoded;
                     socket.connectedAt = new Date();
                     socket.join(decoded.room)
@@ -128,6 +131,29 @@ exports = module.exports = function(io) {
                         socket.to(msg[1].id).emit('gg', {
                             test: "msg2 ok"
                         })
+                    });
+
+                    socket.on('create msg', function(channel) {
+
+
+                        let currentDate = new Date();
+                        console.log(currentDate)
+
+                        var nick = new User({
+                            name: 'test',
+                            password: 'password',
+                            admin: true
+                        });
+
+                        nick.save((err) => {
+                            if (err) throw err;
+                            console.log('User saved successfully');
+                            res.json({
+                                success: true
+                            });
+                        });
+
+
                     });
 
 

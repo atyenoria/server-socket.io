@@ -1,1 +1,0 @@
-export var token_secret = 10
