@@ -4,10 +4,10 @@ var mongoose = require('mongoose');
 
 var messageSchema = mongoose.Schema({
     id: String,
-    channelID: String,
-    text: String,
+    time: String,
+    body: String,
     user: String,
-    time: String
+    room: String
 });
 
 module.exports = mongoose.model('Message', messageSchema);

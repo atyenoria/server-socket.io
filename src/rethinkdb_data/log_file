@@ -1,0 +1,34 @@
+2015-12-05T20:30:39.870413000 0.353745s notice: Recursively removing directory /Users/jima/work2/chat/iot-server/src/rethinkdb_data/tmp
+2015-12-05T20:30:39.872777000 0.356118s notice: Initializing directory /Users/jima/work2/chat/iot-server/src/rethinkdb_data
+2015-12-05T20:30:39.872879000 0.356209s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/Users/jima/work2/chat/iot-server/src/rethinkdb_data' did not already exist or is empty.)
+2015-12-05T20:30:39.873686000 0.357018s notice: Running rethinkdb 2.1.5-2 (CLANG 7.0.0 (clang-700.0.72))...
+2015-12-05T20:30:39.880011000 0.363341s notice: Running on Darwin 14.5.0 x86_64
+2015-12-05T20:30:39.880044000 0.363373s notice: Loading data from directory /Users/jima/work2/chat/iot-server/src/rethinkdb_data
+2015-12-05T20:30:39.979560000 0.462889s info: Automatically using cache size of 4663 MB
+2015-12-05T20:30:39.980402000 0.463731s notice: Listening for intracluster connections on port 29015
+2015-12-05T20:30:39.983657000 0.466986s notice: Listening for client driver connections on port 28015
+2015-12-05T20:30:39.983780000 0.467109s notice: Listening for administrative HTTP connections on port 8080
+2015-12-05T20:30:39.983785000 0.467115s notice: Listening on addresses: 127.0.0.1, ::1
+2015-12-05T20:30:39.983786000 0.467116s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2015-12-05T20:30:39.983789000 0.467119s notice: Server ready, "nakajimas_MacBook_Pro_local_lyq" 45643932-c3e4-4072-bd8d-e36634ebd5c7
+2015-12-05T20:30:41.225866000 1.709241s notice: A newer version of the RethinkDB server is available: 2.2.1. You can read the changelog at <https://github.com/rethinkdb/rethinkdb/releases>.
+2015-12-05T20:38:41.028616000 481.532825s info: Table 0e757e25-12b6-4800-9bb1-54d03c32eb30: Added replica on this server.
+2015-12-05T20:38:42.416176000 482.920431s info: Table 0e757e25-12b6-4800-9bb1-54d03c32eb30: Starting a new Raft election for term 1.
+2015-12-05T20:38:42.441921000 482.946176s info: Table 0e757e25-12b6-4800-9bb1-54d03c32eb30: This server is Raft leader for term 1. Latest log index is 0.
+2015-12-05T20:38:43.170622000 483.674922s info: Table 0e757e25-12b6-4800-9bb1-54d03c32eb30: Configuration is changing.
+2015-12-05T20:39:20.422685000 520.928607s info: Table 00fbe676-0bae-4316-9b8e-2c85aabd70dd: Added replica on this server.
+2015-12-05T20:39:21.963349000 522.469317s info: Table 00fbe676-0bae-4316-9b8e-2c85aabd70dd: Starting a new Raft election for term 1.
+2015-12-05T20:39:21.993062000 522.499030s info: Table 00fbe676-0bae-4316-9b8e-2c85aabd70dd: This server is Raft leader for term 1. Latest log index is 0.
+2015-12-05T20:39:22.558245000 523.064258s info: Table 00fbe676-0bae-4316-9b8e-2c85aabd70dd: Configuration is changing.
+2015-12-05T20:39:34.714446000 535.221000s info: Table 5c3a2bea-a806-4df9-9d3a-c7a208367208: Added replica on this server.
+2015-12-05T20:39:35.791904000 536.298503s info: Table 5c3a2bea-a806-4df9-9d3a-c7a208367208: Starting a new Raft election for term 1.
+2015-12-05T20:39:35.813615000 536.320214s info: Table 5c3a2bea-a806-4df9-9d3a-c7a208367208: This server is Raft leader for term 1. Latest log index is 0.
+2015-12-05T20:39:36.849508000 537.356152s info: Table 5c3a2bea-a806-4df9-9d3a-c7a208367208: Configuration is changing.
+2015-12-05T20:52:41.529636000 1322.070591s info: Table 0bf74cf1-b0d3-4941-a308-5bbe7ee7deda: Added replica on this server.
+2015-12-05T20:52:43.396310000 1323.937310s info: Table 0bf74cf1-b0d3-4941-a308-5bbe7ee7deda: Starting a new Raft election for term 1.
+2015-12-05T20:52:43.419506000 1323.960506s info: Table 0bf74cf1-b0d3-4941-a308-5bbe7ee7deda: This server is Raft leader for term 1. Latest log index is 0.
+2015-12-05T21:33:04.330913000 3744.977565s notice: Server got SIGINT from pid 269, uid 501; shutting down...
+2015-12-05T21:33:04.331152000 3744.977804s notice: Shutting down client connections...
+2015-12-05T21:33:04.331476000 3744.978128s notice: All client connections closed.
+2015-12-05T21:33:04.331482000 3744.978134s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2015-12-05T21:33:04.341744000 3744.988396s notice: Storage engine shut down.

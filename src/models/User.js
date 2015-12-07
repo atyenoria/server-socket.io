@@ -54,7 +54,7 @@ User1.methods.validPassword = password => {
 
 
 
-var User2 = mongoose.Schema({
+var Messga = mongoose.Schema({
     name: String,
     password: String,
     admin: Boolean,

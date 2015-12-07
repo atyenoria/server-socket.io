@@ -2,45 +2,51 @@ var count = 0
 var l = console.log
 
 var jwt = require('jsonwebtoken');
-var User = require('./models/User');
+var Message = require('./models/Message');
+var options = {
+    secret: "test",
+    timeout: 5000, // 5 seconds to send the authentication message
+    algorithm: 'HS256'
+}
+const jwtsecret = "test"
+
+
+
+const REDIS_HOST = 'localhost';
+const REDIS_PORT = '6379';
+const redis = require('redis');
+var  client= redis.createClient();
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
+
 
 exports = module.exports = function(io) {
     io.on('connection', function(socket) {
         console.log("++++++++socket connect+++++++++++")
+        client.set("string key", "string val", redis.print);
+        client.set("string key", "string val", redis.print);
 
         var jwt = require('jsonwebtoken');
         var token1 = jwt.sign({
-            user: 'user1',
+            user: 'customer',
             room: "test"
-        }, 'test');
-        l(token1)
-
+        }, jwtsecret );
+        l("jwt token1(customer : ",token1)
         var token2 = jwt.sign({
-            user: 'user2',
+            user: 'owner',
             room: "test"
-        }, 'test');
-        l(token2)
-
-        var token3 = jwt.sign({
-            user: 'user3',
-            room: "test"
-        }, 'test');
-        l(token3)
-
-
+        }, jwtsecret );
+        l("jwt token2(owner : ",token2)
         delete io.sockets.connected[socket.id];
 
-        var options = {
-            secret: "test",
-            timeout: 5000, // 5 seconds to send the authentication message
-            algorithm: 'HS256'
-        }
+
 
         var auth_timeout = setTimeout(function() {
             socket.disconnect('unauthorized');
             console.log("auth_timeout")
             w("error")
-        }, options.timeout || 5000);
+        }, 200000);
 
 
 
@@ -48,110 +54,106 @@ exports = module.exports = function(io) {
             clearTimeout(auth_timeout);
             jwt.verify(data.token, options.secret, options, function(err, decoded,decode2) {
                 if (err) {
-                    socket.disconnect('unauthorized');
-                    console.log("unauthorized")
+                    socket.disconnect('unauthorized')
+                    console.log("authorize failed")
                 }
                 if (!err && decoded) {
-                    //restore temporarily disabled connection
-                    io.sockets.connected[socket.id] = socket;
-                    //console.log(io.sockets.connected[socket.id])
-                    console.log(socket.id)
-                    console.log("auth ok ")
-                    console.log(decoded)
-                    console.log(decode2)
-                    socket.decoded_token = decoded;
-                    socket.connectedAt = new Date();
-                    socket.join(decoded.room)
-                    // Disconnect listener
+                    io.sockets.connected[socket.id] = socket
+
+                    l("authorize succeed ")
+                    socket.emit('authenticated')
+
+                    l("auth client socket id:  ",socket.id)
+                    l("jwt payload:  ",decoded)
+
+
+                    if(decoded.user === "owner"){
+                        client.sadd(decoded["room"], socket.id);
+                        l("you are owner (add owner user id to redis)")
+                    }else {
+                        l("you are customer")
+                    }
+
+                    socket.decoded_token = decoded
+                    socket.connectedAt = new Date()
+                    socket.join(decoded["room"])
+                    socket.join("test")
+
+
                     socket.on('disconnect', function() {
-                        console.info('SOCKET [%s] DISCONNECTED', socket.id);
-                    });
-
-                    console.info('SOCKET [%s] CONNECTED', socket.id);
-                    socket.emit('authenticated');
-
-
-
-                    socket.emit('test', {
-                        test: "server ok"
+                        client.srem(decoded.room, socket.id);
+                        l('auth client: disconnected: ', socket.id)
                     })
-                    socket.emit('socketid', socket.id)
-                    console.log(socket.id)
-                    socket.on('restart', function(channel) {
-                        console.log("client restartd")
-                        console.log(socket.adapter.rooms.room2)
-                        console.log("client restartd")
+
+
+                    socket.on('customer number', function(channel) {
+                        socket.emit('replay customer number', socket.adapter.rooms[decoded["room"]])
                     });
 
-                    socket.on('get room people', function(channel) {
-                        console.log("client restartd")
-                        console.log(socket.adapter.rooms.room2)
-                        console.log("client restartd")
-                        socket.emit('replay get room people', socket.adapter.rooms.room2)
-                    });
+
+                    socket.on('owner number', function(channel) {
+                        client.smembers(decoded["room"], function (err, val) {
+                            socket.emit ('replay owner number', val);
+                        })
+                    })
+
 
                     socket.on('new message', function(msg) {
                         socket.to('room2').emit('new bc message', msg);
-                        console.log(socket.id)
-                            // console.log(this.socket.sessionid);
-                            // socket.broadcast.emit('new bc message', msg);
-                        console.log('new message')
                     });
+
                     socket.on('new channel', function(channel) {
                         socket.broadcast.emit('new channel', channel)
                     });
 
-
-                    socket.on('room', function(msg) {
-                        console.log('on room')
-                        console.log(msg)
-                        socket.to('test').emit('room_msg', msg);
-                        console.log(socket.id)
-                    });
-
                     socket.on('broad', function(channel) {
-                        console.log(channel)
                         socket.broadcast.emit('new channel', channel)
                     });
 
 
-                    socket.on('test', function(channel) {
-                        console.log("on test ok")
-                    });
-
 
                     socket.on('id msg', function(msg) {
-                        console.log(socket.id)
-                        console.log("on:id msg")
-                        console.log("on:id msg")
-                        console.log(msg)
-                        console.log(msg[1].id)
-                        console.log(msg.id)
-                            // socket.to('room2').emit('gg',{test: "msg1 ok"})
                         socket.to(msg[1].id).emit('gg', {
                             test: "msg2 ok"
                         })
                     });
 
-                    socket.on('create msg', function(channel) {
 
-
+                    socket.on('customer msg', function(msg) {
                         let currentDate = new Date();
-                        console.log(currentDate)
+                        console.log(msg)
+                        //console.log(msg["id"])
+                        console.log(decoded)
 
-                        var nick = new User({
-                            name: 'test',
-                            password: 'password',
-                            admin: true
+                        var Msg = new Message({
+                            id: msg["id"],
+                            time: msg["time"],
+                            body: msg["body"],
+                            user: decoded["user"],
+                            room: decoded["room"]
                         });
 
-                        nick.save((err) => {
+                        Msg.save((err) => {
                             if (err) throw err;
-                            console.log('User saved successfully');
-                            res.json({
-                                success: true
-                            });
+                            console.log('Msg saved successfully');
                         });
+
+                        client.smembers(decoded["room"],function(err, messages){
+                            console.log(messages); //replies with all strings in the list
+
+                            messages.forEach(function(val,index,ar){
+                                socket.to(val).emit ('customer msg', {
+                                    body: msg["body"],
+                                    user: decoded["user"],
+                                    room: decoded["room"]
+                                })
+
+
+                            });
+
+                        })
+
+
 
 
                     });
@@ -162,8 +164,10 @@ exports = module.exports = function(io) {
         }
 
         socket.on('test', function(channel) {
-            console.log("on test ok")
+            console.log("no auth test ok")
         });
+
+        socket.emit('socketid', socket.id);
 
         socket.on('authenticate', authenticate);
 

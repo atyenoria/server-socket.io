@@ -28,7 +28,7 @@
   },
   "scripts": {
     "test": "test",
-    "start": "node server.js"
+    "start": "cd src && node bin.js"
   },
   "keywords": [
     "chat"
