@@ -83,3 +83,14 @@ setTimeout(function() {
     })
 
 }, 1000);
+
+
+
+setTimeout(function() {
+    l(">>>c get initial msg>>>")
+    socket.emit('c get initial msg')
+
+    socket.on('reply c get initial msg', function(data) {
+        l("<<<reply c get initial msg<<<\n", data)
+    })
+}, 3000);

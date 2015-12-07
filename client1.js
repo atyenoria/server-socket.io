@@ -100,3 +100,14 @@ setTimeout(function() {
     l(">>>o send msg a c at o>>>")
     socket.emit('o send msg to a c at o', newMessage);
 }, 1500);
+
+
+
+setTimeout(function() {
+    l(">>>o get initial msg>>>")
+    socket.emit('o get initial msg')
+
+    socket.on('reply o get initial msg', function(data) {
+        l("<<<reply o get initial msg<<<\n", data)
+    })
+}, 3000);

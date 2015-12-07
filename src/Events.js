@@ -28,8 +28,8 @@ exports = module.exports = function(io) {
 
         l("*************mongoose test***********")
 
-        // get all the msg
-        // MsgModel.find({}, function(err, msgs) {
+        // // get all the msg
+        // MsgModel.find({ room:'room1'}, function(err, msgs) {
         //     if (err) throw err;
         //     console.log(msgs);
         //     sleep.sleep(10)
@@ -86,12 +86,12 @@ exports = module.exports = function(io) {
 
 
 
-        MsgModel.findOne({
-            room: 'room1'
-        }, function(err, doc) {
-            doc["room"] = 'room2';
-            doc.save();
-        });
+        // MsgModel.findOne({
+        //     room: 'room1'
+        // }, function(err, doc) {
+        //     doc["room"] = 'room2';
+        //     doc.save();
+        // });
 
         // MsgModel.findOneAndUpdate({
         //     room: 'room1'
@@ -105,11 +105,9 @@ exports = module.exports = function(io) {
 
 
         // MsgModel.find({
-        //     room: 'room1'
+        //     user: 'test'
         // }, function(err, useraa) {
         //     if (err) throw err;
-        //     useraa.remove()
-        //         // delete him
         //     useraa.remove(function(err) {
         //         if (err) throw err;
         //         console.log('User successfully deleted!');
@@ -117,23 +115,18 @@ exports = module.exports = function(io) {
         // });
 
 
-
         // // get a user with ID of 1
-        // MsgModel.findById("566525c3bafd2a6734bf7f62", function(err, user) {
+        // MsgModel.findById("566533f9ab1706745803ba00", function(err, user) {
         //     if (err) throw err;
         //     // change the users location
-        //     l(user)
-        //         // user.id = '111';
+        //     user.room = '111';
+        //     // save the user
+        //     user.save(function(err) {
+        //         if (err) throw err;
+        //         console.log('User successfully updated!');
+        //          sleep.sleep(10)
+        //     });
 
-        //     // // save the user
-        //     // user.save(function(err) {
-        //     //     if (err) throw err;
-
-        //     //     console.log('User successfully updated!');
-
-        //     // });
-
-        //     // sleep.sleep(10)
         // });
 
 
@@ -287,6 +280,7 @@ exports = module.exports = function(io) {
                             if (err) throw err;
                             console.log('c msg saved successfully');
                         });
+
                         client.smembers(decoded["room"], function(err, messages) {
                             messages.forEach(function(val, index, ar) {
                                 socket.to(val).emit('c send msg to all o at o', {
@@ -352,16 +346,30 @@ exports = module.exports = function(io) {
 
 
 
-                    socket.on('o get initial msg at o', function(msg) {
-                        socket.to(msg[1].id).emit('gg', {
-                            test: "msg2 ok"
+                    socket.on('o get initial msg', function() {
+                        l("<<<<<<o get initial msg<<<<<<\n")
+                        MsgModel.find({
+                            room: decoded["room"]
+                        }, 'body id user room', function(err, msg) {
+                            if (err) throw err;
+                            var imsg = {
+                                id: msg.id,
+                                body: msg["body"],
+                                user: msg["user"]
+                            }
+                            socket.emit('reply o get initial msg', msg)
                         })
-                    });
+                    })
 
 
-                    socket.on('c get initial msg at c', function(msg) {
-                        socket.to(msg[1].id).emit('gg', {
-                            test: "msg2 ok"
+                    socket.on('c get initial msg', function() {
+                        l("<<<<<<c get initial msg<<<<<<\n")
+                        MsgModel.find({
+                            room: decoded["room"]
+                        }, 'body id user room', function(err, msg) {
+                            if (err) throw err;
+                            l(msg)
+                            socket.emit('reply c get initial msg', msg)
                         })
                     });
 
@@ -373,6 +381,7 @@ exports = module.exports = function(io) {
                 }
             })
         }
+
 
         socket.on('test', function(channel) {
             console.log("no auth test ok")
