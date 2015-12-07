@@ -139,6 +139,7 @@ exports = module.exports = function(io) {
             user: 'owner1',
             room: "room1"
         }, jwtsecret);
+        l(token)
         socket.emit('jwt-owner1', token);
 
         token = jwt.sign({
