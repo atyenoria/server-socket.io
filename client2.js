@@ -2,7 +2,8 @@ var token = "jwt-customer1"
 console.log("************************* restart client2**********************")
 
 
-
+var Chance = require('chance')
+var chance = new Chance()
 var io = require('socket.io-client')
 var socket = io.connect("http://localhost:3000", {
     'force new connection': true
@@ -45,36 +46,19 @@ socket.on('connect', function() {
 
 
 
-setTimeout(function() {
 
-
-    var newMessage = {
-        id: Date.now(),
-        channelID: "sample",
-        text: "text",
-        user: "user",
-        time: strftime('%H:%M %p', new Date())
-    };
-
-    l(">>>c send msg at c>>>")
-    socket.emit('c send msg at c', newMessage);
-
-
-}, 700);
-
-
-
-
-
+var allomsg = chance.sentence({
+    words: 3
+})
 setTimeout(function() {
     var newMessage = {
         id: Date.now(),
-        body: "hello owner",
+        body: allomsg,
         time: strftime('%H:%M %p', new Date())
     };
-    console.log("owner send msg")
-    socket.emit('customer send msg', newMessage);
-}, 1200);
+    l(">>>c send msg to all o at c>>>")
+    socket.emit('c send msg to all o at c', newMessage);
+}, 500);
 
 
 

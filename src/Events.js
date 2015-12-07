@@ -156,8 +156,8 @@ exports = module.exports = function(io) {
                     });
 
 
-                    socket.on('c send msg at c', function(msg) {
-                        l("<<<<<<c send msg at o<<<<<<\n", msg, "<<<<<<c send msg at o<<<<<<\n")
+                    socket.on('c send msg to all o at c', function(msg) {
+                        l("<<<<<<c send msg to all o at c<<<<<<\n", msg, "<<<<<<c send msg to all o at c<<<<<<\n")
                         console.log(decoded)
                         let currentDate = new Date();
                         var Msg = new Message({
@@ -165,7 +165,8 @@ exports = module.exports = function(io) {
                             time: msg["time"],
                             body: msg["body"],
                             user: decoded["user"],
-                            room: decoded["room"]
+                            room: decoded["room"],
+                            to: "owner"
                         });
                         Msg.save((err) => {
                             if (err) throw err;
@@ -173,7 +174,7 @@ exports = module.exports = function(io) {
                         });
                         client.smembers(decoded["room"], function(err, messages) {
                             messages.forEach(function(val, index, ar) {
-                                socket.to(val).emit('c send msg at o', {
+                                socket.to(val).emit('c send msg to all o at o', {
                                     body: msg["body"],
                                     user: decoded["user"],
                                     room: decoded["room"]
@@ -193,7 +194,8 @@ exports = module.exports = function(io) {
                             time: msg["time"],
                             body: msg["body"],
                             user: decoded["user"],
-                            room: decoded["room"]
+                            room: decoded["room"],
+                            to: "all"
                         });
                         Msg.save((err) => {
                             if (err) throw err;

@@ -3,6 +3,8 @@ console.log("************************* restart client1**********************")
 
 
 
+var Chance = require('chance')
+var chance = new Chance()
 var io = require('socket.io-client')
 var socket = io.connect("http://localhost:3000", {
     'force new connection': true
@@ -45,12 +47,9 @@ socket.on('connect', function() {
 
 
 setTimeout(function() {
-    socket.on('c send msg at o', function(data) {
-
-        l("c send msg at o", data)
-
+    socket.on('c send msg to all o at o', function(data) {
+        l("<<<c send msg to all o at o<<<\n", data, "<<<c send msg to all o at o<<<\n")
     })
-
 }, 700);
 
 
@@ -71,10 +70,13 @@ setTimeout(function() {
 
 
 
+var allcmsg = chance.sentence({
+    words: 3
+})
 setTimeout(function() {
     var newMessage = {
         id: Date.now(),
-        body: "hello all customer",
+        body: allcmsg,
         time: strftime('%H:%M %p', new Date()),
     };
     l(">>>o send msg to all c at o>>>")
@@ -84,25 +86,14 @@ setTimeout(function() {
 
 
 
+
+var acmsg = chance.sentence({
+    words: 2
+})
 setTimeout(function() {
     var newMessage = {
         id: Date.now(),
-        body: "hello a customer",
-        time: strftime('%H:%M %p', new Date()),
-        socket_id: "-NdRhXKF5WDwckn-AAAF"
-    };
-    l(">>>o send msg a c at o>>>")
-    socket.emit('o send msg to a c at o', newMessage);
-}, 1500);
-
-
-
-
-
-setTimeout(function() {
-    var newMessage = {
-        id: Date.now(),
-        body: "hello a customer",
+        body: acmsg,
         time: strftime('%H:%M %p', new Date()),
         socket_id: "-NdRhXKF5WDwckn-AAAF"
     };

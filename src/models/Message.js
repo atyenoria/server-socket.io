@@ -7,7 +7,8 @@ var messageSchema = mongoose.Schema({
     time: String,
     body: String,
     user: String,
-    room: String
+    room: String,
+    to: String
 });
 
 module.exports = mongoose.model('Message', messageSchema);
