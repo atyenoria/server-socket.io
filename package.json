@@ -27,12 +27,14 @@
     "babel-plugin-typecheck": "^2.0.1"
   },
   "scripts": {
-    "start": "concurrent --kill-others \"npm run start-server\" \"npm run start-client1\" \"npm run start-client2\" \"npm run start-client3\" \"npm run start-client4\" ",
+    "start": "concurrent --kill-others \"npm run start-server\" \"npm run start-client1\" \"npm run start-client2\" \"npm run start-client3\" \"npm run start-client4\" \"npm run start-client5\" ",
+    "beauty": "pm2 start src/etc/boot.s",
     "start-server": "nodemon --watch 'src/*.js' --watch 'src/**/*.js' ./node_modules/better-npm-run start-server",
     "start-client1": "nodemon --watch 'client1.js' ./node_modules/better-npm-run start-client1",
     "start-client2": "nodemon --watch 'client2.js' ./node_modules/better-npm-run start-client2",
     "start-client3": "nodemon --watch 'client3.js' ./node_modules/better-npm-run start-client3",
-    "start-client4": "nodemon --watch 'client4.js' ./node_modules/better-npm-run start-client4"
+    "start-client4": "nodemon --watch 'client4.js' ./node_modules/better-npm-run start-client4",
+    "start-client5": "nodemon --watch 'client5.js' ./node_modules/better-npm-run start-client5"
   },
   "betterScripts": {
     "start-server": {
@@ -61,6 +63,12 @@
     },
     "start-client4": {
       "command": "node client4.js",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+     "start-client5": {
+      "command": "node client5.js",
       "env": {
         "NODE_ENV": "development"
       }

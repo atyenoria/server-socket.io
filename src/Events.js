@@ -24,7 +24,7 @@ client.on("error", function(err) {
 
 exports = module.exports = function(io) {
     io.on('connection', function(socket) {
-        console.log("++++++++socket.io connect+++++++++++")
+        console.log("*******socket.io connect*******")
 
 
         token = jwt.sign({
@@ -80,7 +80,7 @@ exports = module.exports = function(io) {
 
         var authenticate = function(data) {
             clearTimeout(auth_timeout);
-            jwt.verify(data.token, options.secret, options, function(err, decoded, decode2) {
+            jwt.verify(data.token, options.secret, options, function(err, decoded) {
                 if (err) {
                     socket.disconnect('unauthorized')
                     console.log("authorize failed")
@@ -96,10 +96,10 @@ exports = module.exports = function(io) {
 
 
                     if (decoded.user === "owner1") {
-                        client.sadd(decoded["room1"], socket.id);
+                        client.sadd(decoded["room"], socket.id);
                         l("you are owner1")
                     } else if (decoded.user === "owner2") {
-                        client.sadd(decoded["room2"], socket.id);
+                        client.sadd(decoded["room"], socket.id);
                         l("you are owner2")
                     } else {
                         l("you are customer")
@@ -142,7 +142,6 @@ exports = module.exports = function(io) {
                     });
 
 
-
                     socket.on('id msg', function(msg) {
                         socket.to(msg[1].id).emit('gg', {
                             test: "msg2 ok"
@@ -150,12 +149,17 @@ exports = module.exports = function(io) {
                     });
 
 
-                    socket.on('customer msg', function(msg) {
-                        let currentDate = new Date();
-                        console.log(msg)
-                            //console.log(msg["id"])
-                        console.log(decoded)
 
+
+                    socket.on('get room people at o', function() {
+                        socket.emit('reply room people at o', socket.adapter.rooms[decoded["room"]])
+                    });
+
+
+                    socket.on('c send msg at c', function(msg) {
+                        l("<<<<<<c send msg at o<<<<<<\n", msg, "<<<<<<c send msg at o<<<<<<\n")
+                        console.log(decoded)
+                        let currentDate = new Date();
                         var Msg = new Message({
                             id: msg["id"],
                             time: msg["time"],
@@ -163,31 +167,90 @@ exports = module.exports = function(io) {
                             user: decoded["user"],
                             room: decoded["room"]
                         });
-
                         Msg.save((err) => {
                             if (err) throw err;
-                            console.log('Msg saved successfully');
+                            console.log('c msg saved successfully');
                         });
-
                         client.smembers(decoded["room"], function(err, messages) {
-                            console.log(messages); //replies with all strings in the list
-
                             messages.forEach(function(val, index, ar) {
-                                socket.to(val).emit('customer msg', {
+                                socket.to(val).emit('c send msg at o', {
                                     body: msg["body"],
                                     user: decoded["user"],
                                     room: decoded["room"]
                                 })
+                            })
+                        })
+                    })
 
 
-                            });
 
+                    socket.on('o send msg to all c at o', function(msg) {
+                        l("<<<<<<o send msg to all c at o<<<<<<\n", msg, "<<<<<<o send msg to all c at o<<<<<<\n")
+                        let currentDate = new Date();
+                        console.log(decoded)
+                        var Msg = new Message({
+                            id: msg["id"],
+                            time: msg["time"],
+                            body: msg["body"],
+                            user: decoded["user"],
+                            room: decoded["room"]
+                        });
+                        Msg.save((err) => {
+                            if (err) throw err;
+                            console.log('o msg saved successfully');
+                        });
+                        socket.to(decoded["room"]).emit('o send msg to all c at c', {
+                            body: msg["body"],
+                            user: decoded["user"],
+                            room: decoded["room"]
+                        })
+                    })
+
+
+                    socket.on('o send msg to a c at o', function(msg) {
+                        l("<<<<<<o send msg to a c at o<<<<<<\n", msg, "<<<<<<o send msg to a c at o<<<<<<\n")
+                        let currentDate = new Date();
+                        console.log(decoded)
+                        var Msg = new Message({
+                            id: msg["id"],
+                            time: msg["time"],
+                            body: msg["body"],
+                            user: decoded["user"],
+                            room: decoded["room"],
+                            to: msg["socket_id"]
+                        });
+                        Msg.save((err) => {
+                            if (err) throw err;
+                            console.log('o msg saved successfully');
+                        });
+
+                        socket.to(msg["socket_id"]).emit('o send msg to all c at c', {
+                            body: msg["body"],
+                            user: decoded["user"],
+                            room: decoded["room"]
                         })
 
 
+                    })
 
 
+
+                    socket.on('o get initial msg at o', function(msg) {
+                        socket.to(msg[1].id).emit('gg', {
+                            test: "msg2 ok"
+                        })
                     });
+
+
+                    socket.on('c get initial msg at c', function(msg) {
+                        socket.to(msg[1].id).emit('gg', {
+                            test: "msg2 ok"
+                        })
+                    });
+
+
+
+
 
 
                 }

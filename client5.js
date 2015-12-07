@@ -4,11 +4,10 @@ var socket = io.connect("http://localhost:3000", {
 })
 var l = console.log
 var jwt
-l("************************* restart client3**********************")
-
+l("************************* restart client5**********************")
 
 socket.on('connect', function() {
-    socket.on('jwt-customer1', function(data) {
+    socket.on('jwt-customer3', function(data) {
         jwt = data
     })
     setTimeout(function() {
@@ -17,7 +16,6 @@ socket.on('connect', function() {
         });
     }, 1500);
 })
-
 
 
 socket.on('disconnect', function() {

@@ -3,10 +3,11 @@ var socket = io.connect("http://localhost:3000", {
     'force new connection': true
 })
 var l = console.log
+var jwt
 l("************************* restart client4**********************")
 
 socket.on('connect', function() {
-    socket.on('jwt-customer4', function(data) {
+    socket.on('jwt-customer2', function(data) {
         jwt = data
     })
     setTimeout(function() {
