@@ -1,7 +1,7 @@
 var l = console.log
 
 var jwt = require('jsonwebtoken');
-var Message = require('./models/Message');
+var MsgModel = require('./models/Msg');
 var options = {
     secret: "test",
     timeout: 5000, // 5 seconds to send the authentication message
@@ -11,7 +11,7 @@ var jwt = require('jsonwebtoken');
 var token
 const jwtsecret = "test"
 
-
+var sleep = require('sleep');
 
 const REDIS_HOST = 'localhost';
 const REDIS_PORT = '6379';
@@ -21,10 +21,125 @@ client.on("error", function(err) {
     console.log("Error " + err);
 });
 
-
 exports = module.exports = function(io) {
+
     io.on('connection', function(socket) {
-        console.log("*******socket.io connect*******")
+
+
+        l("*************mongoose test***********")
+
+        // get all the msg
+        // MsgModel.find({}, function(err, msgs) {
+        //     if (err) throw err;
+        //     console.log(msgs);
+        //     sleep.sleep(10)
+        // });
+
+
+        // MsgModel.find({
+        //     room: 'room1'
+        // }, function(err, msg) {
+        //     if (err) throw err;
+        //     // object of the user
+        //     console.log(msg)
+        //     sleep.sleep(10)
+        // });
+
+
+
+        // MsgModel.findById("566525c2bafd2a6734bf7f61", function(err, msg) {
+        //     if (err) throw err;
+        //     // show the one user
+        //     console.log(msg);
+        //     sleep.sleep(10)
+        // });
+
+
+
+        // MsgModel.find({
+        //     room: "room1"
+        // }).where('id').gt("10").exec(function(err, users) {
+        //     if (err) throw err
+        //     console.log(users)
+        //     sleep.sleep(10)
+        // });
+
+
+
+        // MsgModel.find({
+        //     room: "room1"
+        // }).where('id').gt("10").exec(function(err, msg) {
+        //     if (err) throw err
+        //     console.log(msg)
+        //     msg.id = '111';
+
+        //     // save the user
+        //     msg.save(function(err) {
+        //         if (err) throw err;
+
+        //         console.log('User successfully updated!');
+
+        //     });
+
+        //     sleep.sleep(10)
+        // });
+
+
+
+        MsgModel.findOne({
+            room: 'room1'
+        }, function(err, doc) {
+            doc["room"] = 'room2';
+            doc.save();
+        });
+
+        // MsgModel.findOneAndUpdate({
+        //     room: 'room1'
+        // }, function(err, user) {
+        //     if (err) throw err;
+
+        //     console.log(user);
+        //     console.log("asdfa");
+        // });
+
+
+
+        // MsgModel.find({
+        //     room: 'room1'
+        // }, function(err, useraa) {
+        //     if (err) throw err;
+        //     useraa.remove()
+        //         // delete him
+        //     useraa.remove(function(err) {
+        //         if (err) throw err;
+        //         console.log('User successfully deleted!');
+        //     });
+        // });
+
+
+
+        // // get a user with ID of 1
+        // MsgModel.findById("566525c3bafd2a6734bf7f62", function(err, user) {
+        //     if (err) throw err;
+        //     // change the users location
+        //     l(user)
+        //         // user.id = '111';
+
+        //     // // save the user
+        //     // user.save(function(err) {
+        //     //     if (err) throw err;
+
+        //     //     console.log('User successfully updated!');
+
+        //     // });
+
+        //     // sleep.sleep(10)
+        // });
+
+
+
+
+        l("*******socket.io connect*******")
 
 
         token = jwt.sign({
@@ -160,7 +275,7 @@ exports = module.exports = function(io) {
                         l("<<<<<<c send msg to all o at c<<<<<<\n", msg, "<<<<<<c send msg to all o at c<<<<<<\n")
                         console.log(decoded)
                         let currentDate = new Date();
-                        var Msg = new Message({
+                        var Msg = new MsgModel({
                             id: msg["id"],
                             time: msg["time"],
                             body: msg["body"],
@@ -189,7 +304,7 @@ exports = module.exports = function(io) {
                         l("<<<<<<o send msg to all c at o<<<<<<\n", msg, "<<<<<<o send msg to all c at o<<<<<<\n")
                         let currentDate = new Date();
                         console.log(decoded)
-                        var Msg = new Message({
+                        var Msg = new MsgModel({
                             id: msg["id"],
                             time: msg["time"],
                             body: msg["body"],
@@ -213,7 +328,7 @@ exports = module.exports = function(io) {
                         l("<<<<<<o send msg to a c at o<<<<<<\n", msg, "<<<<<<o send msg to a c at o<<<<<<\n")
                         let currentDate = new Date();
                         console.log(decoded)
-                        var Msg = new Message({
+                        var Msg = new MsgModel({
                             id: msg["id"],
                             time: msg["time"],
                             body: msg["body"],

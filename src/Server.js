@@ -21,7 +21,7 @@ const PORT = 3000
 app.use(morgan(' ":method :url HTTP/:http-version" :status :res[content-length]'))
 
 
-process.env.MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/chat_app';
+process.env.MONGOLAB_URI = 'mongodb://localhost/chat_app';
 process.env.PORT = 3000;
 mongoose.connect(process.env.MONGOLAB_URI);
 process.on('uncaughtException', err => {
