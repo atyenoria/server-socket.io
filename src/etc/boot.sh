@@ -1,0 +1,1 @@
+nodemon --watch 'src/*.js' --watch 'src/**/*.js' --watch '*.js' /Users/jima/.nodebrew/current/bin/js-beautify -r *.js src/*.js src/**/*.js > /dev/null
