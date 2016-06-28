@@ -1,7 +1,6 @@
 var l = console.log
 
 var jwt = require('jsonwebtoken');
-var MsgModel = require('./models/Msg');
 var options = {
     secret: "test",
     timeout: 5000, // 5 seconds to send the authentication message
@@ -24,112 +23,6 @@ client.on("error", function(err) {
 exports = module.exports = function(io) {
 
     io.on('connection', function(socket) {
-
-
-        l("*************mongoose test***********")
-
-        // // get all the msg
-        // MsgModel.find({ room:'room1'}, function(err, msgs) {
-        //     if (err) throw err;
-        //     console.log(msgs);
-        //     sleep.sleep(10)
-        // });
-
-
-        // MsgModel.find({
-        //     room: 'room1'
-        // }, function(err, msg) {
-        //     if (err) throw err;
-        //     // object of the user
-        //     console.log(msg)
-        //     sleep.sleep(10)
-        // });
-
-
-
-        // MsgModel.findById("566525c2bafd2a6734bf7f61", function(err, msg) {
-        //     if (err) throw err;
-        //     // show the one user
-        //     console.log(msg);
-        //     sleep.sleep(10)
-        // });
-
-
-
-        // MsgModel.find({
-        //     room: "room1"
-        // }).where('id').gt("10").exec(function(err, users) {
-        //     if (err) throw err
-        //     console.log(users)
-        //     sleep.sleep(10)
-        // });
-
-
-
-        // MsgModel.find({
-        //     room: "room1"
-        // }).where('id').gt("10").exec(function(err, msg) {
-        //     if (err) throw err
-        //     console.log(msg)
-        //     msg.id = '111';
-
-        //     // save the user
-        //     msg.save(function(err) {
-        //         if (err) throw err;
-
-        //         console.log('User successfully updated!');
-
-        //     });
-
-        //     sleep.sleep(10)
-        // });
-
-
-
-        // MsgModel.findOne({
-        //     room: 'room1'
-        // }, function(err, doc) {
-        //     doc["room"] = 'room2';
-        //     doc.save();
-        // });
-
-        // MsgModel.findOneAndUpdate({
-        //     room: 'room1'
-        // }, function(err, user) {
-        //     if (err) throw err;
-
-        //     console.log(user);
-        //     console.log("asdfa");
-        // });
-
-
-
-        // MsgModel.find({
-        //     user: 'test'
-        // }, function(err, useraa) {
-        //     if (err) throw err;
-        //     useraa.remove(function(err) {
-        //         if (err) throw err;
-        //         console.log('User successfully deleted!');
-        //     });
-        // });
-
-
-        // // get a user with ID of 1
-        // MsgModel.findById("566533f9ab1706745803ba00", function(err, user) {
-        //     if (err) throw err;
-        //     // change the users location
-        //     user.room = '111';
-        //     // save the user
-        //     user.save(function(err) {
-        //         if (err) throw err;
-        //         console.log('User successfully updated!');
-        //          sleep.sleep(10)
-        //     });
-
-        // });
-
-
 
 
         l("*******socket.io connect*******")
@@ -269,18 +162,6 @@ exports = module.exports = function(io) {
                         l("<<<<<<c send msg to all o at c<<<<<<\n", msg, "<<<<<<c send msg to all o at c<<<<<<\n")
                         console.log(decoded)
                         let currentDate = new Date();
-                        var Msg = new MsgModel({
-                            id: msg["id"],
-                            time: msg["time"],
-                            body: msg["body"],
-                            user: decoded["user"],
-                            room: decoded["room"],
-                            to: "owner"
-                        });
-                        Msg.save((err) => {
-                            if (err) throw err;
-                            console.log('c msg saved successfully');
-                        });
 
                         client.smembers(decoded["room"], function(err, messages) {
                             messages.forEach(function(val, index, ar) {
@@ -299,18 +180,7 @@ exports = module.exports = function(io) {
                         l("<<<<<<o send msg to all c at o<<<<<<\n", msg, "<<<<<<o send msg to all c at o<<<<<<\n")
                         let currentDate = new Date();
                         console.log(decoded)
-                        var Msg = new MsgModel({
-                            id: msg["id"],
-                            time: msg["time"],
-                            body: msg["body"],
-                            user: decoded["user"],
-                            room: decoded["room"],
-                            to: "all"
-                        });
-                        Msg.save((err) => {
-                            if (err) throw err;
-                            console.log('o msg saved successfully');
-                        });
+
                         socket.to(decoded["room"]).emit('o send msg to all c at c', {
                             body: msg["body"],
                             user: decoded["user"],
@@ -323,18 +193,6 @@ exports = module.exports = function(io) {
                         l("<<<<<<o send msg to a c at o<<<<<<\n", msg, "<<<<<<o send msg to a c at o<<<<<<\n")
                         let currentDate = new Date();
                         console.log(decoded)
-                        var Msg = new MsgModel({
-                            id: msg["id"],
-                            time: msg["time"],
-                            body: msg["body"],
-                            user: decoded["user"],
-                            room: decoded["room"],
-                            to: msg["socket_id"]
-                        });
-                        Msg.save((err) => {
-                            if (err) throw err;
-                            console.log('o msg saved successfully');
-                        });
 
                         socket.to(msg["socket_id"]).emit('o send msg to all c at c', {
                             body: msg["body"],
@@ -349,29 +207,11 @@ exports = module.exports = function(io) {
 
                     socket.on('o get initial msg', function() {
                         l("<<<<<<o get initial msg<<<<<<\n")
-                        MsgModel.find({
-                            room: decoded["room"]
-                        }, 'body id user room', function(err, msg) {
-                            if (err) throw err;
-                            var imsg = {
-                                id: msg.id,
-                                body: msg["body"],
-                                user: msg["user"]
-                            }
-                            socket.emit('reply o get initial msg', msg)
                         })
-                    })
 
 
                     socket.on('c get initial msg', function() {
                         l("<<<<<<c get initial msg<<<<<<\n")
-                        MsgModel.find({
-                            room: decoded["room"]
-                        }, 'body id user room', function(err, msg) {
-                            if (err) throw err;
-                            l(msg)
-                            socket.emit('reply c get initial msg', msg)
-                        })
                     });
 
 

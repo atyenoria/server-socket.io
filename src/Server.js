@@ -15,15 +15,12 @@ import express from 'express';
 const app = express();
 import path from 'path';
 var http = require('http').Server(app);
-import mongoose from 'mongoose'
 import morgan from 'morgan'
 const PORT = 3000
 app.use(morgan(' ":method :url HTTP/:http-version" :status :res[content-length]'))
 
 
-process.env.MONGOLAB_URI = 'mongodb://192.168.87.35/chat_app';
 process.env.PORT = 3000;
-mongoose.connect(process.env.MONGOLAB_URI);
 process.on('uncaughtException', err => {
     console.log(err);
 });
@@ -44,8 +41,6 @@ const server = app.listen(PORT, '192.168.87.35', err => {
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './index.html'));
 });
-
-
 
 
 
