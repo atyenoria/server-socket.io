@@ -21,7 +21,7 @@ const PORT = 3000
 app.use(morgan(' ":method :url HTTP/:http-version" :status :res[content-length]'))
 
 
-process.env.MONGOLAB_URI = 'mongodb://localhost/chat_app';
+process.env.MONGOLAB_URI = 'mongodb://192.168.87.35/chat_app';
 process.env.PORT = 3000;
 mongoose.connect(process.env.MONGOLAB_URI);
 process.on('uncaughtException', err => {
@@ -31,7 +31,7 @@ process.on('uncaughtException', err => {
 
 
 
-const server = app.listen(PORT, 'localhost', err => {
+const server = app.listen(PORT, '192.168.87.35', err => {
     if (err) {
         console.log(err);
         return;
