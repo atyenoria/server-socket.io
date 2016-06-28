@@ -1,11 +1,13 @@
 var token = "jwt-customer1"
+var filename="(client2.js)"
+
 console.log("************************* restart client2**********************")
 
 
 var Chance = require('chance')
 var chance = new Chance()
 var io = require('socket.io-client')
-var socket = io.connect("http://localhost:3000", {
+var socket = io.connect("http://192.168.87.35:3000", {
     'force new connection': true
 })
 
@@ -22,7 +24,7 @@ socket.on('disconnect', function() {
     console.info('SOCKET [%s] DISCONNECTED', socket.id);
 });
 socket.on('connect', function() {
-    l("socket.id:", socket.id)
+    l(filename,"socket.id:", socket.id)
     socket.on(token, function(data) {
         jwtToken = data
         jwt.verify(jwtToken, options.secret, options, function(err, decoded) {
@@ -56,7 +58,7 @@ setTimeout(function() {
         body: allomsg,
         time: strftime('%H:%M %p', new Date())
     };
-    l(">>>c send msg to all o at c>>>")
+    l(filename,">>>c send msg to all o at c>>>")
     socket.emit('c send msg to all o at c', newMessage);
 }, 500);
 
@@ -67,7 +69,7 @@ setTimeout(function() {
 setTimeout(function() {
 
     socket.on('o send msg to all c at c', function(data) {
-        l("<<<o send msg to all c at c<<<\n", data, "<<<o send msg to all c at c<<<\n")
+        l(filename,"<<<o send msg to all c at c<<<\n", data, "<<<o send msg to all c at c<<<\n")
     })
 
 }, 1000);
@@ -79,7 +81,7 @@ setTimeout(function() {
 setTimeout(function() {
 
     socket.on('o send msg to a c at c', function(data) {
-        l("<<<o send msg to a c at c<<<\n", data, "<<<o send msg to a c at c<<<\n")
+        l(filename,"<<<o send msg to a c at c<<<\n", data, "<<<o send msg to a c at c<<<\n")
     })
 
 }, 1000);
@@ -87,7 +89,7 @@ setTimeout(function() {
 
 
 setTimeout(function() {
-    l(">>>c get initial msg>>>")
+    l(filename,">>>c get initial msg>>>")
     socket.emit('c get initial msg')
 
     socket.on('reply c get initial msg', function(data) {

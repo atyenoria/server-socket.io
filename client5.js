@@ -1,5 +1,5 @@
 var io = require('socket.io-client')
-var socket = io.connect("http://localhost:3000", {
+var socket = io.connect("http://192.168.87.35:3000", {
     'force new connection': true
 })
 var l = console.log

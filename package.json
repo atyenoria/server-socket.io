@@ -28,7 +28,8 @@
     "babel-plugin-typecheck": "^2.0.1"
   },
   "scripts": {
-    "start": "concurrent --kill-others \"npm run start-server\" \"npm run start-client1\" \"npm run start-client2\" \"npm run start-client3\" \"npm run start-client4\" \"npm run start-client5\" ",
+    "start": "concurrent --kill-others \"npm run start-server\" \"npm run start-client1\" \"npm run start-client2\"",
+    "start5": "concurrent --kill-others \"npm run start-server\" \"npm run start-client1\" \"npm run start-client2\" \"npm run start-client3\" \"npm run start-client4\" \"npm run start-client5\" ",
     "beauty": "pm2 start src/etc/boot.sh",
     "start-server": "nodemon --watch 'src/*.js' --watch 'src/**/*.js' ./node_modules/better-npm-run start-server",
     "start-client1": "nodemon --watch 'client1.js' ./node_modules/better-npm-run start-client1",

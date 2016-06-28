@@ -1,5 +1,5 @@
+var filename="(sever.js)"
 var l = console.log
-
 var jwt = require('jsonwebtoken');
 var options = {
     secret: "test",
@@ -25,21 +25,20 @@ exports = module.exports = function(io) {
     io.on('connection', function(socket) {
 
 
-        l("*******socket.io connect*******")
+        l(filename,"*******socket.io connect*******")
 
 
         token = jwt.sign({
             user: 'owner1',
             room: "room1"
         }, jwtsecret);
-        l(token)
         socket.emit('jwt-owner1', token);
 
-        token = jwt.sign({
-            user: 'owner2',
-            room: "room2"
-        }, jwtsecret);
-        socket.emit('jwt-owner2', token);
+        // token = jwt.sign({
+        //     user: 'owner2',
+        //     room: "room2"
+        // }, jwtsecret);
+        // socket.emit('jwt-owner2', token);
 
         token = jwt.sign({
             user: 'customer1',
@@ -47,23 +46,23 @@ exports = module.exports = function(io) {
         }, jwtsecret);
         socket.emit('jwt-customer1', token);
 
-        token = jwt.sign({
-            user: 'customer2',
-            room: "room1"
-        }, jwtsecret);
-        socket.emit('jwt-customer2', token);
+        // token = jwt.sign({
+        //     user: 'customer2',
+        //     room: "room1"
+        // }, jwtsecret);
+        // socket.emit('jwt-customer2', token);
 
-        token = jwt.sign({
-            user: 'customer3',
-            room: "room1"
-        }, jwtsecret);
-        socket.emit('jwt-customer3', token);
+        // token = jwt.sign({
+        //     user: 'customer3',
+        //     room: "room1"
+        // }, jwtsecret);
+        // socket.emit('jwt-customer3', token);
 
-        token = jwt.sign({
-            user: 'customer4',
-            room: "room1"
-        }, jwtsecret);
-        socket.emit('jwt-customer4', token);
+        // token = jwt.sign({
+        //     user: 'customer4',
+        //     room: "room1"
+        // }, jwtsecret);
+        // socket.emit('jwt-customer4', token);
 
 
 
@@ -74,7 +73,7 @@ exports = module.exports = function(io) {
 
         var auth_timeout = setTimeout(function() {
             socket.disconnect('unauthorized');
-            console.log("auth_timeout")
+            l(filename,"auth_timeout")
             w("error")
         }, 200000);
 
@@ -85,26 +84,26 @@ exports = module.exports = function(io) {
             jwt.verify(data.token, options.secret, options, function(err, decoded) {
                 if (err) {
                     socket.disconnect('unauthorized')
-                    console.log("authorize failed")
+                    l(filename,"authorize failed")
                 }
                 if (!err && decoded) {
                     io.sockets.connected[socket.id] = socket
 
-                    l("authorize succeed ")
+                    l(filename,"authorize succeed ")
                     socket.emit('authenticated')
 
-                    l("auth client socket id:  ", socket.id)
-                    l("jwt payload:  ", decoded)
+                    l(filename,"auth client socket id:  ", socket.id)
+                    l(filename,"jwt payload:  ", decoded)
 
 
                     if (decoded.user === "owner1") {
                         client.sadd(decoded["room"], socket.id);
-                        l("you are owner1")
+                        l(filename,"you are owner1")
                     } else if (decoded.user === "owner2") {
                         client.sadd(decoded["room"], socket.id);
-                        l("you are owner2")
+                        l(filename,"you are owner2")
                     } else {
-                        l("you are customer")
+                        l(filename,"you are customer")
                     }
 
                     socket.decoded_token = decoded
@@ -115,7 +114,7 @@ exports = module.exports = function(io) {
 
                     socket.on('disconnect', function() {
                         client.srem(decoded.room, socket.id);
-                        l('auth client: disconnected: ', socket.id)
+                        l(filename,'auth client: disconnected: ', socket.id)
                     })
 
 
@@ -159,8 +158,8 @@ exports = module.exports = function(io) {
 
 
                     socket.on('c send msg to all o at c', function(msg) {
-                        l("<<<<<<c send msg to all o at c<<<<<<\n", msg, "<<<<<<c send msg to all o at c<<<<<<\n")
-                        console.log(decoded)
+                        l(filename,"<<<<<<c send msg to all o at c<<<<<<\n", msg, "<<<<<<c send msg to all o at c<<<<<<\n")
+                        l(filename,decoded)
                         let currentDate = new Date();
 
                         client.smembers(decoded["room"], function(err, messages) {
@@ -177,9 +176,9 @@ exports = module.exports = function(io) {
 
 
                     socket.on('o send msg to all c at o', function(msg) {
-                        l("<<<<<<o send msg to all c at o<<<<<<\n", msg, "<<<<<<o send msg to all c at o<<<<<<\n")
+                        l(filename,"<<<<<<o send msg to all c at o<<<<<<\n", msg, "<<<<<<o send msg to all c at o<<<<<<\n")
                         let currentDate = new Date();
-                        console.log(decoded)
+                        l(filename,decoded)
 
                         socket.to(decoded["room"]).emit('o send msg to all c at c', {
                             body: msg["body"],
@@ -190,9 +189,9 @@ exports = module.exports = function(io) {
 
 
                     socket.on('o send msg to a c at o', function(msg) {
-                        l("<<<<<<o send msg to a c at o<<<<<<\n", msg, "<<<<<<o send msg to a c at o<<<<<<\n")
+                        l(filename,"<<<<<<o send msg to a c at o<<<<<<\n", msg, "<<<<<<o send msg to a c at o<<<<<<\n")
                         let currentDate = new Date();
-                        console.log(decoded)
+                        l(filename,decoded)
 
                         socket.to(msg["socket_id"]).emit('o send msg to all c at c', {
                             body: msg["body"],
@@ -206,12 +205,12 @@ exports = module.exports = function(io) {
 
 
                     socket.on('o get initial msg', function() {
-                        l("<<<<<<o get initial msg<<<<<<\n")
+                        l(filename,"<<<<<<o get initial msg<<<<<<\n")
                         })
 
 
                     socket.on('c get initial msg', function() {
-                        l("<<<<<<c get initial msg<<<<<<\n")
+                        l(filename,"<<<<<<c get initial msg<<<<<<\n")
                     });
 
 
@@ -225,7 +224,7 @@ exports = module.exports = function(io) {
 
 
         socket.on('test', function(channel) {
-            console.log("no auth test ok")
+            l(filename,"no auth test ok")
         });
 
         socket.emit('socketid', socket.id);
